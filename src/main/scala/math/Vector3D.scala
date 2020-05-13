@@ -10,6 +10,12 @@ case class Ray(val origin: Point, val direction: Vector3D) {
 
   def pointAt(t: Double): Vector3D = origin + direction ** t
 
+  def toColor: Color = {
+    val direction = this.direction.unit // Vector3D
+    val t = 0.5 * (direction.y + 1.0)
+
+    (Vector3D(1.0, 1.0, 1.0)**(1.0-t) + Vector3D(0.5, 0.7, 1.0)**t).toColor // Color
+  }
 }
 
 case class Vector3D(x: Double, y: Double, z: Double) {

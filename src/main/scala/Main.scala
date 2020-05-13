@@ -13,6 +13,6 @@ object Main extends App {
                     Vector3D(0.0, 2.0, 0.0),
                     Vector3D(0.0, 0.0, 0.0))
 
-  val image = Image(300, 300, scene)
+  val image = Image(600, 400, scene)
   ImageWriter.write(image)
 }

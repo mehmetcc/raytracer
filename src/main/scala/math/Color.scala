@@ -42,14 +42,3 @@ case class Color(val red: Double, val green: Double, val blue: Double) {
 
   def sample: Color = this */ Math.sqrt(red*red + green*green + blue*blue)
 }
-
-object Color {
-
-  /** I don't know if this is bad? Sure enough this is pure Java conventions */
-  def toColor(ray: Ray): Color = {
-    val direction = ray.direction.unit // Vector3D
-    val t = 0.5 * (direction.y + 1.0)
-
-    (Vector3D(1.0, 1.0, 1.0)**(1.0-t) + Vector3D(0.5, 0.7, 1.0)**t).toColor // Color
-  }
-}

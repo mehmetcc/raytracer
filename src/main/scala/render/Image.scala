@@ -1,7 +1,8 @@
 package render
 
 import java.io._
-import java.nio.charset._
+
+import scala.language.postfixOps
 
 import math.{Color, Point, Ray}
 
@@ -18,30 +19,30 @@ case class Scene(lowerLeft: Point,
 
 case class Image(width: Int, height: Int, scene: Scene) {
 
-  /** For whatever reason, scalac doesn't want this to be written with ML-syntax */
-  def render: List[List[Color]] = List.range(0, height - 2).reverse.map {
-    (x: Int) => calculateX(x)
+  def render: List[Color] = calculate.toList
+
+  private def calculate: IndexedSeq[Color] =
+    for {
+      y <- height-1 to 0 by -1
+      x <- 0 until width
+    } yield pixel(x, y)
+
+  private def pixel(x: Int, y: Int): Color = {
+    val u: Double = x.toDouble / width.toDouble
+    val v: Double = y.toDouble / height.toDouble
+
+    val ray = Ray(scene.origin, scene.lowerLeft + scene.horizontal ** u + scene.vertical ** v)
+    ray.toColor
   }
-
-  private def calculateX(y: Int): List[Color] =
-    List range (0, width - 1) map ((x: Int) => {
-      val u: Double = x.toDouble / width.toDouble
-      val v: Double = y.toDouble / height.toDouble
-
-      val ray = Ray(scene.origin, scene.lowerLeft + scene.horizontal ** u + scene.vertical ** v)
-      Color.toColor(ray)
-    })
-
 }
 
 object ImageWriter {
 
   def write(image: Image, path: String = "output.ppm") = {
     val file = new File(path)
-
     using(
       new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
-      val lines = image.render.flatten
+      val lines = image.render
       writer =>
         writer.write("P3\n" + image.width + " " + image.height + "\n255\n")
         /** we are doing io so some side effects are necessary evil :) */
@@ -49,7 +50,6 @@ object ImageWriter {
           writer.write(line.ir + " " + line.ig + " " + line.ib + "\n")
         }
     }
-
   }
 
   // https://stackoverflow.com/questions/28969738/writing-data-generated-in-scala-to-a-text-file
