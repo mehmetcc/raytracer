@@ -1,15 +1,23 @@
 package math
 
+import render.Color
+
 /**
   * DAVID DAVENPORT'UN ASKERLERİYİZ
   *
   * @author Mehmet Can Altuntaş
   * github.com/mehmetcc
   */
-case class Ray(val origin: Point, val direction: Vector3D) {
+case class Ray(origin: Point, direction: Vector3D) {
 
   def pointAt(t: Double): Vector3D = origin + direction ** t
 
+  /**
+   * This basically draws the background
+   * The logic is that if there is no
+   * intersecting objects, the ray would
+   * naturally illuminate the surroundings
+   */
   def toColor: Color = {
     val direction = this.direction.unit // Vector3D
     val t = 0.5 * (direction.y + 1.0)
