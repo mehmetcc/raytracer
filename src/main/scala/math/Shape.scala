@@ -9,19 +9,23 @@ import render.Color
  * github.com/mehmetcc
  */
 
+
+
 trait Shape {
   def center: Point
   def radius: Double
   def color: Color
+  // def record: List[HitEntry]
 
-  def shade(ray: Ray): Option[Color]
+  // mmphh, function polymorphism
+  def hit[s <: Shape](ray: Ray): Option[Color]
 }
 
 case class Sphere(center: Point, radius: Double, color: Color) extends Shape {
 
-  def shade(ray: Ray): Option[Color] = if (discriminant(ray) > 0.0) Some(illuminate(ray)) else None
+  def hit[Sphere](ray: Ray): Option[Color] = if (discriminant(ray) > 0.0) Some(illuminate(ray)) else None
 
-  /** TODO add Option to return the point of intersection */
+  /** TODO return the point of intersection inside Option[Point] */
   private def discriminant(ray: Ray): Double = {
     val distance = ray.origin - center
 

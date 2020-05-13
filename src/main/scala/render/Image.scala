@@ -18,7 +18,7 @@ case class Scene(lowerLeft: Point,
 class Image(val width: Int,
             val height: Int,
             val scene: Scene,
-            val shapes: List[Sphere]) {
+            val shapes: List[Shape]) {
 
   def render: List[Color] = calculate.toList
 
@@ -41,10 +41,13 @@ class Image(val width: Int,
 
     val ray = Ray(scene.origin,
                   scene.lowerLeft + scene.horizontal ** u + scene.vertical ** v)
+
+    val point = ray.pointAt(2.0) // ssh, magic! TODO change this tho
+
     // TODO this should be for all shapes
     // TODO this as of now is purely testing
-    val current: Sphere = shapes(0)
-    current.shade(ray) match {
+    val current = shapes(0)
+    current.hit(ray) match {
       case Some(intersection) => intersection
       case None => ray.toColor
     }
